@@ -9,6 +9,7 @@ var rl = readline.createInterface({
 var textMenu = `************************* 
 1. Rafraichir les données 
 2. Lister les sessions
+3. Lister les présentateurs
 99. Quitter\n`
 
 var promise1 = new Promise(function (resolve, reject) {
