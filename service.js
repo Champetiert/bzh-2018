@@ -12,19 +12,19 @@ class Service {
     init() {
         return Promise.all(this.tabPromesse)
             .then((tabResult) => {
-                this.talks = []
+                this.talks = [];
                 tabResult.forEach(
                     (result) => {
-                        this.talks = this.talks.concat(result)
+                        this.talks = this.talks.concat(result);
                     })
                 return this.talks.length;
             })
     }
     listerSessions() {
         if (this.talks.length === 0) {
-            return this.init().then(nb => this.talks)
+            return this.init().then(nb => this.talks);
         } else {
-            return Promise.resolve(this.talks)
+            return Promise.resolve(this.talks);
         }
     }
 
