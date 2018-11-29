@@ -1,42 +1,40 @@
 // tableau qui contiendra toutes les sessions du BreizhCamp
-//talks = 0;
-talks = []
-var request = require('request')
+let request = require('request-promise-native')
+const promesse1$ = request('http://2018.breizhcamp.org/json/talks.json', { json: true });
+const promesse2$ = request('http://2018.breizhcamp.org/json/others.json', { json: true });
 
-exports.init = function (callback) {
+class Service {
+    constructor() {
+        this.talks = [];
+        this.tabPromesse=[promesse1$, promesse2$];   
+    }
+    init () {
+        return Promise.all(this.tabPromesse)
+            .then((tabResult) => {
+                this.talks = []
+                tabResult.forEach(
+                    (result) => {
+                        this.talks = this.talks.concat(result)
+                    })
+                return this.talks.length;
+            })
 
-    request('http://2018.breizhcamp.org/json/talks.json', { json: true }, function (err, res, body) {
-        if (err) { return console.log('Erreur', err); }
+    }
+    listerSessions()  {
+        console.log(this.talks);
+        return this.talks;
+    }
 
-        //une fois les données récupérées, alimenter la variable talks
-        //talks += body.length;
-        talks = talks.concat(body)
-        //invoquer la callback avec le nombre de sessions récupérées
-        request('http://2018.breizhcamp.org/json/others.json', { json: true }, function (err, res, body) {
+
+    speakers (callback){
+        request('http://.2018.breizhcamp.org/conference/speakers/', {}, function (err, res, body) {
             if (err) { return console.log('Erreur', err); }
-            // une fois les données récupérées, alimenter la variable talks
-            //talks += body.length;
-            talks = talks.concat(body)
 
-            //invoquer la callback avec le nombre de sessions récupérées
-            //callback(talks);
-            callback(talks.length)
+            let dom = new jsdom.JSDOM(pageHTML);
+            let langs = dom.window.document.querySelectorAll(".speaker");
+            console.log(body);
         });
-    });
 
-};
-
-exports.listerSessions = function (callback) {
-    callback(talks)
-};
-
-exports.speakers = function (callback) {
-    request('http://.2018.breizhcamp.org/conference/speakers/', {}, function (err, res, body) {
-        if (err) { return console.log('Erreur', err); }
-
-        var dom = new jsdom.JSDOM(pageHTML);
-        var langs = dom.window.document.querySelectorAll(".speaker");
-        console.log(body);
-    });
-
+    }
 }
+exports.name = new Service();

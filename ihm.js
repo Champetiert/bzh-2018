@@ -12,35 +12,23 @@ var textMenu = `*************************
 3. Lister les présentateurs
 99. Quitter\n`
 
-var promise1 = new Promise(function (resolve, reject) {
-    setTimeout(function () {
-        resolve('foo');
-    }, 300);
-});
 
-exports.start = function () {
-    promise1.then(rl.question(textMenu, function (saisie) {
-        service.init(function (nb) {
-            console.log('[init]', nb, 'sessions trouvées.')
+exports.start = ()=>
+    rl.question(textMenu, (saisie)=> {
+        service.init().then((taille)=>console.log(taille));
 
             switch (saisie) {
                 case '1':
-                    service.init(function (nb) {
-                        console.log('[init]', nb, 'sessions trouvées.')
-                    });
+                service.init().then((taille)=>console.log(taille));
                     break;
                 case '2':
-                    service.listerSessions(function (callback) {
-                        callback.forEach(tabTalk => {
-                            console.log('[talks]', tabTalk.name,"(",tabTalk.speakers,")");
-                        });    
-                    }
-                    )
+                    service.listerSessions().forEach(tabTalk =>  
+                        console.log(`[talks]${tabTalk.name}(${tabTalk.speakers})`)
+                        );
                     break;
                 default:
                     break;
             }
             rl.close();
         });
-    }))
-};
+
